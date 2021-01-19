@@ -1,0 +1,135 @@
+<metalink xmlns="http://www.metalinker.org/" version="3.0">
+  <publisher>
+    <name>UniProt Consortium</name>
+    <url>http://www.uniprot.org/</url>
+  </publisher>
+  <license>
+    <name>Creative Commons Attribution-NoDerivs 3.0</name>
+    <url>http://creativecommons.org/licenses/by-nd/3.0/</url>
+  </license>
+  <description>UniProt</description>
+  <version>2020_06</version>
+  <files>
+    <file name="README">
+      <size>3900</size>
+      <verification>
+        <hash type="md5">530af904a91629ca7c81d3835abcc995</hash>
+      </verification>
+      <resources>
+        <url location="ch" preference="100" type="ftp">ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/README</url>
+        <url location="uk" preference="100" type="ftp">ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/README</url>
+        <url location="us" preference="100" type="ftp">ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/README</url>
+      </resources>
+    </file>
+  <file name="LICENSE">
+      <size>364</size>
+      <verification>
+        <hash type="md5">684b22211f135481e507fb639ec14458</hash>
+      </verification>
+      <resources>
+        <url location="ch" preference="100" type="ftp">ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/LICENSE</url>
+        <url location="uk" preference="100" type="ftp">ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/LICENSE</url>
+        <url location="us" preference="100" type="ftp">ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/LICENSE</url>
+      </resources>
+    </file>
+  <file name="uniprot.xsd">
+      <size>53618</size>
+      <verification>
+        <hash type="md5">b416933be75a71e5acc534fd620a3787</hash>
+      </verification>
+      <resources>
+        <url location="ch" preference="100" type="ftp">ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/uniprot.xsd</url>
+        <url location="uk" preference="100" type="ftp">ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot.xsd</url>
+        <url location="us" preference="100" type="ftp">ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot.xsd</url>
+      </resources>
+    </file>
+  <file name="uniprot_sprot.dat.gz">
+      <size>610597851</size>
+      <verification>
+        <hash type="md5">ba58eab6c110d38e50d836003d03e87a</hash>
+      </verification>
+      <resources>
+        <url location="ch" preference="100" type="ftp">ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz</url>
+        <url location="uk" preference="100" type="ftp">ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz</url>
+        <url location="us" preference="100" type="ftp">ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.dat.gz</url>
+      </resources>
+    </file>
+  <file name="reldate.txt">
+      <size>151</size>
+      <verification>
+        <hash type="md5">19435273583d04a417e24aa158f5f541</hash>
+      </verification>
+      <resources>
+        <url location="ch" preference="100" type="ftp">ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/reldate.txt</url>
+        <url location="uk" preference="100" type="ftp">ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/reldate.txt</url>
+        <url location="us" preference="100" type="ftp">ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/reldate.txt</url>
+      </resources>
+    </file>
+  <file name="uniprot_sprot_varsplic.fasta.gz">
+      <size>8359965</size>
+      <verification>
+        <hash type="md5">d3908794430989822fb6e491e6ea6b8f</hash>
+      </verification>
+      <resources>
+        <url location="ch" preference="100" type="ftp">ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot_varsplic.fasta.gz</url>
+        <url location="uk" preference="100" type="ftp">ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot_varsplic.fasta.gz</url>
+        <url location="us" preference="100" type="ftp">ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot_varsplic.fasta.gz</url>
+      </resources>
+    </file>
+  <file name="uniprot_sprot.fasta.gz">
+      <size>89772962</size>
+      <verification>
+        <hash type="md5">c3a3f4f5de9d69723a1e8f13817c0068</hash>
+      </verification>
+      <resources>
+        <url location="ch" preference="100" type="ftp">ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz</url>
+        <url location="uk" preference="100" type="ftp">ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz</url>
+        <url location="us" preference="100" type="ftp">ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz</url>
+      </resources>
+    </file>
+  <file name="uniprot_sprot.xml.gz">
+      <size>778218746</size>
+      <verification>
+        <hash type="md5">3384c98c94c442a86e795fc99dbe55b4</hash>
+      </verification>
+      <resources>
+        <url location="ch" preference="100" type="ftp">ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.xml.gz</url>
+        <url location="uk" preference="100" type="ftp">ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.xml.gz</url>
+        <url location="us" preference="100" type="ftp">ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.xml.gz</url>
+      </resources>
+    </file>
+  <file name="uniprot_trembl.fasta.gz">
+      <size>50016063583</size>
+      <verification>
+        <hash type="md5">b458d0712d2e67f03cf42d4b4bfa4dbb</hash>
+      </verification>
+      <resources>
+        <url location="ch" preference="100" type="ftp">ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz</url>
+        <url location="uk" preference="100" type="ftp">ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz</url>
+        <url location="us" preference="100" type="ftp">ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.fasta.gz</url>
+      </resources>
+    </file>
+  <file name="uniprot_trembl.dat.gz">
+      <size>137531591768</size>
+      <verification>
+        <hash type="md5">36520105d9c1651a517eeb132e90ff85</hash>
+      </verification>
+      <resources>
+        <url location="ch" preference="100" type="ftp">ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.dat.gz</url>
+        <url location="uk" preference="100" type="ftp">ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.dat.gz</url>
+        <url location="us" preference="100" type="ftp">ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.dat.gz</url>
+      </resources>
+    </file>
+  <file name="uniprot_trembl.xml.gz">
+      <size>162366846524</size>
+      <verification>
+        <hash type="md5">2f2e13348fbd2e725fa49f4c43f8fbd5</hash>
+      </verification>
+      <resources>
+        <url location="ch" preference="100" type="ftp">ftp://ftp.expasy.org/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.xml.gz</url>
+        <url location="uk" preference="100" type="ftp">ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.xml.gz</url>
+        <url location="us" preference="100" type="ftp">ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_trembl.xml.gz</url>
+      </resources>
+    </file>
+  </files>
+</metalink>

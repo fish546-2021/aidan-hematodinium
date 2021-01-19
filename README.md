@@ -54,5 +54,13 @@ VennDiagram: 1.6.20
 vsn: 3.58.0
 ```
 
+**Projects and Assignments**
+
+**2021-01-18_Intro_to_Blastx**: Compared a set of nucleotide sequences to Swiss-Prot sequences using BLAST. All relevant code in Jupyter Notebook within folder. 
+
+Nucleotide sequences downloaded from [here](https://eagle.fish.washington.edu/cnidarian/Ab_4denovo_CLC6_a.fa) at 20:00 PST on 2021-01-18. Command is documented within Jupyter notebook.
+
+Swiss-Prot sequences downloaded from [here](ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/complete/uniprot_sprot.fasta.gz) at 19:00 PST on 2021-01-18. Command and MD5 checksum are documented in Jupyter notebook.
+
 
 
