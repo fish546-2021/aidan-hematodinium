@@ -1,7 +1,14 @@
 # Files to ignore
 
+# General
+*.fastq
+*.fastq.gz
+
 # Project 1: 2021-01-18
 projects/2021-01-18_Intro_to_Blastx/data/blastdb/*.fasta
 projects/2021-01-18_Intro_to_Blastx/data/blastdb/*.gz
 projects/2021-01-18_Intro_to_Blastx/data/blastdb/*.phr
 projects/2021-01-18_Intro_to_Blastx/data/blastdb/*.psq
+
+# Project 2: 2021-01-25
+projects/2021-01-25_Data_Exploration/programs/*
