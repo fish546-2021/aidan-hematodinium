@@ -1,0 +1,18 @@
+# Files to ignore
+
+# Ignore our data file, as it's quite big
+data/**
+
+# Ignore the indices we create for Kallisto - too big
+output/*.idx
+
+# Ignore the matrices we create for DESeq2 - also too big
+output/kallisto_matrices/**
+
+# Ignore the AllGenes text files from DESeq2 output - too big
+graphs/DESeq2_output/*/AllGene*.txt
+
+# Ignore our merged libraries - also too big
+output/libraries_merged/**
+
+.Rproj.user
