@@ -1,0 +1,12 @@
+Module	Section	Sample Name	Source
+Kallisto	all_sections	349_R1_001	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/hematodinium_analysis/output/kallisto_libraries_bairdihemat_transcriptomev2.0/std_errortracking.txt
+Kallisto	all_sections	481_R1_001	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/hematodinium_analysis/output/kallisto_libraries_bairdihemat_transcriptomev2.0/std_errortracking.txt
+Kallisto	all_sections	132_R1_001	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/hematodinium_analysis/output/kallisto_libraries_bairdihemat_transcriptomev2.0/std_errortracking.txt
+Kallisto	all_sections	334_R1_001	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/hematodinium_analysis/output/kallisto_libraries_bairdihemat_transcriptomev2.0/std_errortracking.txt
+Kallisto	all_sections	485_R1_001	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/hematodinium_analysis/output/kallisto_libraries_bairdihemat_transcriptomev2.0/std_errortracking.txt
+Kallisto	all_sections	151_R1_001	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/hematodinium_analysis/output/kallisto_libraries_bairdihemat_transcriptomev2.0/std_errortracking.txt
+Kallisto	all_sections	254_R1_001	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/hematodinium_analysis/output/kallisto_libraries_bairdihemat_transcriptomev2.0/std_errortracking.txt
+Kallisto	all_sections	445_R1_001	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/hematodinium_analysis/output/kallisto_libraries_bairdihemat_transcriptomev2.0/std_errortracking.txt
+Kallisto	all_sections	380821_S2_R1_001	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/hematodinium_analysis/output/kallisto_libraries_bairdihemat_transcriptomev2.0/std_errortracking.txt
+Kallisto	all_sections	380823_S4_R1_001	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/hematodinium_analysis/output/kallisto_libraries_bairdihemat_transcriptomev2.0/std_errortracking.txt
+Kallisto	all_sections	380825_S6_R1_001	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/hematodinium_analysis/output/kallisto_libraries_bairdihemat_transcriptomev2.0/std_errortracking.txt
