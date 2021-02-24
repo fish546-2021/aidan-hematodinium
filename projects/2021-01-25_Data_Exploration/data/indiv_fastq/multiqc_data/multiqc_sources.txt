@@ -1,0 +1,2 @@
+Module	Section	Sample Name	Source
+FastQC	all_sections	lib72_read1	/mnt/c/Users/acoyl/Documents/GitHub/fish546/projects/2021-01-25_Data_Exploration/data/indiv_fastq/lib72_read1_fastqc.zip
