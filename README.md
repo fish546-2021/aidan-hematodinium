@@ -5,7 +5,7 @@ Roberts Lab, UW-SAFS
 
 This repository contains a series of smaller projects completed as part of Steven Roberts' Bioinformatics class at UW-SAFS, Winter 2021. Projects are all contained in subdirectories within projects/
 
-**Projects and Assignments**
+## Projects and Assignments
 
 **2021-01-18_Intro_to_Blastx**: 
 
@@ -23,5 +23,9 @@ Practiced exploring .fastq files running FastQC on a .fastq library. Nucleotide 
 
 This is an offshoot of my research for the Roberts lab so far. The central aim is to analyze differential expression in _Hematodinium_. Samples are taken from _Hematodinium_-infected _Chionoecetes bairdi_. To view the most up-to-date information, please go to [my main repo](https://github.com/afcoyle/hemat_bairdii_transcriptome). If you are looking for more detailed information as part of FISH 546, in-depth info describing process/workflow/plan for the future is found in the README file within the projects/hematodinium_analysis directory of this repository.
 
+## Final Presentation
 
+My presentation can be found [here](https://docs.google.com/presentation/d/1pXjrX3fH6EFyqEdDnN3F3G2X8gBaBO3tztmqMwTiEec/edit#slide=id.p)
+
+My methods can be found [here](https://github.com/fish546-2021/aidan-hematodinium/blob/main/projects/hematodinium_analysis/scripts/fish546_writeup.Rmd)
 
