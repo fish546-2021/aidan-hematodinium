@@ -24,7 +24,162 @@ Before describing the details of my project, we'll examine the system! First, we
 
 _C. bairdi_ is a true crab native to the North Pacific. It is a widely harvested species, and has quite a substantial commercial, recreational, and subsistence value in Alaska. Within the state, it ranges from southeastern Alaska up to the mid-Bering Sea. Its populations are well-monitored, with annual trawl surveys and pot surveys throughout its Alaskan range. It also has a wide range of parasites, including leeches, chitin-eating bacteria, fungal infections, and the subject of this analysis - the parasitic dinoflagellate _Hematodinium sp._
 
-_Hematodinium sp._ is a broad parasite of many crustaceans, including crabs, amphipods, lobsters, and shrimp. Widely distributed throughout waters north of the equator, it infects many valuable commercial species, including Alaskan snow and Tanner crab (_Chionoecetes spp._). First observed in western Europe in the 1930s, _Hematodinium sp._ was found in Tanner crab of southeast Alaska in 1985 `r citep("10.3354/dao003195")`. Since then, it has become endemic to the region. _Hematodinium_ progresses slowly within _Chionoecetes spp._ with several months between presumed infection and mortality, but is fatal in nearly 100% of cases `r citep("10.3354/dao064253")`. As the infection progresses, _Hematodinium_ proliferates throughout the host, resulting in tissue breakdown and respiratory damage `r citep("10.1007/s42995-020-00061-z")`. The hemolymph becomes an opaque white color, giving the crab a distinct 'cooked' appearance. The crab flesh also becomes bitter and chalky, making the crab unpalatable. This condition is known as Bitter Crab Syndrome (BCS)
+_Hematodinium sp._ is a broad parasite of many crustaceans, including crabs, amphipods, lobsters, and shrimp. Widely distributed throughout waters north of the equator, it infects many valuable commercial species, including Alaskan snow and Tanner crab (_Chionoecetes spp._). First observed in western Europe in the 1930s, _Hematodinium sp._ was found in Tanner crab of southeast Alaska in 1985 `r citep("10.3354/dao003195")`. Since then, it has become endemic to the region. _Hematodinium_ progresses slowly within _Chionoecetes spp._ with several months between presumed infection and mortality, but is fatal in nearly 100% of cases `r citep("10.3354/dao064253")`. As the infection progresses, _Hematodinium_ proliferates throughout the host, resulting in tissue breakdown and respiratory damage `r citep("10.1007/s42995-020-00061-z")`. The hemolymph becomes an opaque white color, giving the crab a distinct 'cooked' appearance. The crab flesh also becomes bitter and chalky, making the crab unpalatable. This condition is known as Bitter Crab Syndrome (BCS). 
+
+Alaskan _Chionoecetes_ stocks are already impacted by _Hematodinium sp._, both through direct mortality and the reduction of marketable live crab. However, there is concern that climate change could result in increased rates of _Hematodinium sp._ prevalence. Though there is evidence of a linkage between _Hematodinium_ infection rates and warming waters, the links to climate appear to be specific to hosts and regions. Therefore, specifically examining the response of _Chionoecetes bairdi_ and _Hematodinium sp._ to elevated temperatures will shed light on how this important crab species will be impacted by climate change, thus improving fishery management.
+
+## Experiment and Data Source
+
+To investigate the response of _Chionoecetes bairdi_ and _Hematodinium sp._ to temperature, Grace Crandall carried out a project in collaboration with NOAA examining gene expression in infected and uninfected crab at different temperatures. Crab were held at ambient, low, and elevated temperatures for 17 days, with hemolymph samples taken on days 0, 2, and 17. These samples were then preserved and the RNA was sequenced. In a previous analysis (performed by Grace Crandall), differences in gene expression between infected and uninfected crab was examined, along with the impact of temperature on _Chionoecetes bairdi_ gene expression. However, no analysis has yet been performed on the impact of temperature on gene expression of _Hematodinium sp._ My goal was to perform that analysis and determine how gene expression differed between _Hematodinium sp._ from hosts kept at different temperatures.
+
+There are three nuances that complicate this goal. First, samples from Day 0 were taken when all crabs were still held at ambient temperatures - water temperature only began to change after hemolymph samples were taken. Therefore, samples from Elevated Day 0 and Lowered Day 0 groups were, in fact, taken from crabs that had been experiencing ambient temperatures. Second, during the experiment, there was a mass mortality event within the Elevated treatment group. As a result, we lack any samples from Elevated Day 17 crab.And finally, only one sample was sequenced from each day in the Lowered treatment group. Without replication, analyzing differential expression between Lowered and Elevated/Ambient conditions is impossible.
+
+#### Individual and Pooled Libraries
+
+Both individual (single sample) and pooled (multiple samples sequenced together) libraries were produced from this experiment. However, in this analysis, we restricted pairwise comparisons to be between individual samples only. Importantly, **individual libraries were taken from the same crab over time**. 
+
+|Condition   | Day 0 | Day 2 | Day 17|
+|------------|-------|-------|-------|
+|**Elevated**|G, H, I|G, H, I|       |
+|**Ambient** |A, B, C|A, B, C|A, B, C|
+|**Lowered** |E      |E      |E      |
+
+Table 1: Individual libraries. Letters correspond to IDs of the crab they originate from. For instance, all samples labeled B originate from the same crab.
+
+# Analysis
+
+## Analysis Background:
+
+We will run the following R packages:
+
+**DESeq2**: Performs differential expression analysis using negative binomial distribution model. [Documentation available here](https://bioconductor.org/packages/release/bioc/html/DESeq2.html).
+
+**GO-MWU**: Measures the enrichment of gene ontology (GO) categories using a Mann-Whitney U (MWU) test. [Documentation available here](https://github.com/z0on/GO_MWU)
+
+Scripts are each given a two-digit number. The first indicates the analysis they belong to, the second indicates the step in the analysis. For instance, the 5th step of the 4th analysis would be numbered 45_scriptname
+
+Analyses are numbered as follows:
+
+1) Analysis 1: Pairwise comparisons of expression with cbai_transcriptomev2.0
+2) Exploratory analysis: Attempting to determine taxa by BLASTing against publicly-available sequences and genomes
+3) Analysis 2: Pairwise comparisons of expression with hemat_transcriptomev1.6
+
+
+## Analysis Part 1: Pairwise Comparisons for Unfiltered Transcriptome
+
+This analysis utilized a previously-assembled transcriptome, referred to both in this analysis as cbai_transcriptomev2.0 (as per the original Roberts Lab notation) and as cbaihemat_transcriptomev2.0 (my notation - to clarify that it is not filtered by taxa). This transcriptome is available on the [Roberts Lab Genomic Resources page](https://robertslab.github.io/resources/Genomic-Resources/).
+
+In this analysis, the goal was to get all differentially-expressed genes, and then determine the taxa of each - whether it belonged to _Hematodinium_ or _C. bairdi_. However, this proved quite difficult, resulting in the ongoing re-doing of much of this with a _Hematodinium_-specific transcriptome.
+
+
+#### Functions: hematodinium_analysis_functions.R
+
+This file contains all custom-built functions used in this analysis
+
+
+#### Script 1: 01_download_libraries_run_kallisto.ipynb
+
+This script does the following:
+
+1) Download individual libraries, pooled libraries, and transcriptome (links available in script)
+
+2) Create a kallisto index from transcriptome
+
+3) Use kallisto to pseudoalign libraries to index, thus quantifying counts for all libraries. 
+
+4) Use a perl script from the [Trinity pipeline](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Trinity-Transcript-Quantification) to group kallisto alignments into matrices. Each matrix represents samples for one pairwise comparison of individual libraries. We performed the following pairwise comparisons. Unless otherwise specified, only individual libraries were used in pairwise comparisons:
+
+- Ambient Day 0 vs. Ambient Day 2
+- Ambient Day 0 vs. Ambient Day 17
+- Ambient Day 2 vs. Ambient Day 17
+- Ambient Day 2 vs. Elevated Day 2
+- Elevated Day 0 vs. Elevated Day 2
+- Elevated Day 2 vs. Ambient Day 0 + 2
+- Ambient Day 0 + 2 + 17 + Elevated Day 0 + Lowered Day 0 vs. Elevated Day 2. For this sample, both individual and pooled libraries were used. This compared all possible samples taken at ambient temperatures to all possible samples taken at elevated temperatures.
+
+#### Script 2: 02_kallisto_to_deseq_to_accessionIDs.Rmd
+
+This script does the following:
+
+1) Analyzes the Trinity matrices of kallisto transcript counts we just built with DESeq2, which provides statistics on the difference in expression between conditions. This outputs the following:
+- Tables on statistical difference in expression for all sequences
+- Tables on statistical difference in expression for differentially-expressed sequences
+- MA plots of expression and log2 fold change
+- MA plots shrunken using apeglm
+- Dispersion estimates
+- PCA plot
+
+2) Turns the DESeq2 output tables into newline-separated files of UniProt accession IDs, which will later be modified to create input for GO-MWU
+
+To do each of these steps, it utilizes custom-built functions available in hematodinium_analysis_functions.R
+
+#### Script 3: 03_uniprot_to_GO.Rmd
+
+This script has a single purpose - it is used to obtain gene ontology (GO) terms from accession IDs. It utilizes a custom-built function available in hematodinium_analysis_functions.R
+
+Using this script also requires you to have a recently-downloaded copy of the UniProt accession database (including GO terms). 
+
+#### Script 4: 04_eliminate_duplicates.ipynb
+
+This short script utilizes a perl script available from the [GO-MWU repo](https://github.com/z0on/GO_MWU) to eliminate all repeated genes, thus finishing one of the two inputs necessary for GO-MWU - a two-column tab-separated table of genes and GO terms
+
+#### Script 5: 05_GO-MWU_prep.Rmd
+
+Another short script that utilizes a custom-built function available in hematodinium_analysis_functions.R. This takes a DESeq2 output file of all genes and a BLASTx annotation of the transcriptome used, and produces the second input necessary to run GO-MWU - a 2-column CSV of accession IDs and unadjusted p-values with a header line. 
+
+#### Script 6: 06_running_GO-mwu
+
+This folder contains all the files necessary to run [GO-MWU](https://github.com/z0on/GO_MWU), including the script we will actually run the analysis from - 06_running-GO-MWU.R
+
+For each pairwise comparison, this produces the following:
+
+- A hierarchical clustering tree of significant GO categories. Font size indicates level of enrichment, colors indicate whether up-regulated or down-regulated
+
+- Data table containing GO terms for each gene and measures of interest
+
+- Dissimilarity matrix of GO categories
+
+- Results of Mann-Whitney U (MWU) test
+
+## Exploratory Analysis: Determining Taxa for Analysis 1
+
+#### Script 1: 11_obtaining_TPM_for_DEGs.Rmd
+
+This script takes a list of genes that are differentially expressed between two groups and cross-references it with the kallisto indices to produce a table containing all transcript and gene IDs for all inputted DEGs, along with all TPM counts for individual kallisto quantifications for those DEGs.
+
+The purpose of this was to obtain DEG counts for a future analysis
+
+#### Script 2: ncbi_genome_blasts.ipynb
+
+This script takes cbai_transcriptomev2.0 (which, again, is not filtered by taxa), and BLASTs it against genomes closely-related to the two species that have been downloaded from the NCBI database. The purpose is to determine which sequences in our transcriptome originate from _C. bairdi_ and which originate from _Hematodinium sp._ by comparing the e-values. However, regardless of the e-values we set as a bar, we simply didn't get enough matches in our BLASTs - of the 1.4 million sequences in cbai_transcriptomev2.0, only 610,000 were matched to either genome, despite setting an e-value bar of 10^-2 (even double-counting sequences that matched to both). Due to this, we moved on to Analysis 2, which looks for differential expression among sequences that match to a previously-assembled _Hematodinium_ transcriptome
+
+## Analysis 2: Pairwise comparisons of expression with hemat_transcriptomev1.6
+
+All these scripts are functionally identical to their counterparts from Analysis 1. However, rather than building libraries against a kallisto index from cbai_transcriptomev2.0, we are building them against hemat_transcriptomev1.6, which is taxa-filtered to presumably only include _Hematodinium sp._ sequences. More extensive documentation is available [here](https://robertslab.github.io/sams-notebook/2021/03/08/Transcriptome-Assembly-Hematodinium-Transcriptomes-v1.6-and-v1.7-with-Trinity-on-Mox.html)
+
+# Results
+
+## Analysis 1: Pairwise Comparisons for Unfiltered Transcriptome
+
+Number of differentially-expressed sequences, as determined by DESeq2:
+- Ambient Day 2 vs. Elevated Day 2: 2067
+- Elevated Day 0 vs. Elevated Day 2: 338
+
+PCA plot (produced by DESeq2):
+- [Ambient Day 2 vs. Elevated Day 2](https://github.com/afcoyle/hemat_bairdi_transcriptome/blob/main/graphs/DESeq2_output/cbaihemat_transcriptomev2.0/amb2_vs_elev2_indiv/PCA_plot.png)
+- [Elevated Day 0 vs. Elevated Day 2](https://github.com/afcoyle/hemat_bairdi_transcriptome/blob/main/graphs/DESeq2_output/cbaihemat_transcriptomev2.0/elev0_vs_elev2_indiv/PCA_plot.png)
+
+MA plot (produced by DESeq2):
+- [Ambient Day 2 vs. Elevated Day 2](https://github.com/afcoyle/hemat_bairdi_transcriptome/blob/main/graphs/DESeq2_output/cbaihemat_transcriptomev2.0/amb2_vs_elev2_indiv/normalizedcts_v_log2foldchange.png)
+- [Elevated Day 0 vs. Elevated Day 2](https://github.com/afcoyle/hemat_bairdi_transcriptome/blob/main/graphs/DESeq2_output/cbaihemat_transcriptomev2.0/elev0_vs_elev2_indiv/normalizedcts_v_log2foldchange.png)
+
+GO-MWU Enrichment Plot:
+- [Ambient Day 2 vs. Elevated Day 2](https://github.com/afcoyle/hemat_bairdi_transcriptome/blob/main/graphs/GOMWU_output/cbaihemat_transcriptomev2.0/amb2_vs_elev2_indiv.png)
+- [Elevated Day 0 vs. Elevated Day 2](https://github.com/afcoyle/hemat_bairdi_transcriptome/blob/main/graphs/GOMWU_output/cbaihemat_transcriptomev2.0/elev0_vs_elev2_indiv.png)
+
+Our GO-MWU results show that despite a lower number of DEGs, there was much more pathway enrichment in Elevated Day 0 vs. Elevated Day 2 than in Ambient Day 2 vs. Elevated Day 2. This is likely due to the decreased variability in gene expression provided by examining the same crabs and parasites over time, rather than comparing different crab/parasite systems, and may indicate that in scenarios where adding additional pairwise comparisons become onerous, it may be optimal to focus on Elevated Day 0 vs. Elevated Day 2. 
+
+Our results are also not filtered by taxa. Given that the goal is to examine differential expression within _Hematodinium sp._ specifically, this means that we need a way to differentiate _Hematodinium sp._ sequences from other sequences. Despite attempting several methods in our exploratory analysis, we failed to differentiate taxa in a way that meshes with Analysis 1. Therefore, we began to restart our analysis, but specifically aligning to a filtered transcriptome that only contains sequences that are likely _Hematodinium sp._ As of 2021-03-11, our results for that analysis have not been completed.
 
 
 ## References

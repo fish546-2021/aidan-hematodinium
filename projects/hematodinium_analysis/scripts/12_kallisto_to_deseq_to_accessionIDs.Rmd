@@ -1,0 +1,421 @@
+---
+title: "12_kallisto_to_deseq_to_accessionIDs"
+author: "Aidan Coyle"
+date: "Last compiled on `r format(Sys.time(), '%Y-%m-%d')`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Originally written 2021/01/18
+Roberts Lab, UW-SAFS
+Written for analysis of _Hematodinium_ differential gene expression
+
+**IMPORTANT: Many code blocks have been set to eval = FALSE due to long runtimes. To re-run analysis, change those blocks to TRUE**
+
+# Purpose:
+This script utilizes a series of custom-built functions for the following: 
+- running a Trinity matrix of kallisto transcript counts through DESeq2
+- turning DESeq2 output into newline-separated file of UniProt accessions
+- creating Venn diagrams of transcript IDs and accession IDs (not needed for future steps - can skip if not wanted)
+
+
+
+```{r libraries, message=FALSE}
+library(apeglm)
+library(DESeq2)
+library(tidyverse)
+library(VennDiagram)
+library(vsn)
+
+# Functions are defined in hematodinium_analysis_functions.R
+source("hematodinium_analysis_functions.R")
+```
+
+# Stage 1: Analyzing Trinity matrix from Kallisto output with DESeq2
+
+Almost all analysis takes place in function deseq_analysis(). Documentation in function file. If attempting to redo a specific graph or table, the file DESeq_demonstration.R may be helpful
+
+These blocks take quite a long time to run, so **in the markdown file, I have set eval to FALSE**. I recommend only re-running blocks that you are certain you want to run - again, run times are quite lengthy.
+
+For all code blocks, **the order of rows in temperature and day values in exp_design should match the order of columns of the `kallisto.isoforms.counts.matrix` input file from Trinity for the pairwise comparison**. As an example, here's what the `exp_design` table should look like for hypothetical libraries A (day 0, lowered temp), B (day 2, ambient temp), and C (day 17, elevated temp) if the `kallisto.isoforms.counts.matrix` file columns are ordered A, B, C:
+
+```{r example_table}
+exp_design <- data.frame(temp = factor(c("Low", "Amb", "Elev")),
+                         day = factor(c(0, 2, 17)))
+
+exp_design
+```
+
+As a further note, the pairwise comparisons performed here treat temperature as water temperature at time of sample, **not** treatment group. This means that Elevated Day 0 and Lowered Day 0 libraries are treated as **ambient-temperature libraries**, as samples were taken prior to any temperature changes. For all other samples, there are no such differences.
+
+### Explanation of deseq_analysis():
+
+A function to analyze Kallisto output with DESeq2. Will likely take quite long to run - there's some computationally-heavy steps involved
+
+Takes 4 inputs
+
+1. kallisto_path: path to matrix created by Trinity from Kallisto outputs
+
+2. experiment_table: table with treatments in experiment. 
+
+  + Order should match columns of matrix from Trinity
+
+  + Example: Day and temperature data for libraries 118, 132, 178, 463, 481, 485 (in order)
+
+  + exp_design <- data.frame(day = factor(c(0, 0, 0, 17, 17, 17)), temp = factor(c("Amb", "Amb", "Amb", "Amb", "Amb", "Amb")))
+
+3. output_path: path to the output folder
+
+4. variable: variable being examined. Used in creation of deseq object.
+
+  + Should be 'day' or 'temp' (without quotes)
+
+### Elevated Day 2 vs. Ambient Day 0+2, Individual Libraries Only
+exp_design = day and temperature data for libraries 178, 118, 132, 359, 349, 334, 272, 294, 280 (in order).
+
+```{r elev2vsamb02, eval = FALSE}
+exp_design <- data.frame(temp = factor(c("Amb", "Amb", "Amb", "Amb", "Amb", "Amb",
+                                         "Elev", "Elev", "Elev")),
+                         day = factor(c(0, 0, 0, 2, 2, 2, 2, 2, 2)))
+  
+deseq_analysis(kallisto_path = "../output/kallisto_matrices/cbaihemat_transcriptomev2.0/elev2_vs_amb02_indiv_only/kallisto.isoform.counts.matrix",
+               experiment_table = exp_design,
+               output_path = "../graphs/DESeq2_output/cbaihemat_transcriptomev2.0/elev2_vs_amb02_indiv_only",
+               variable = "temp")
+```
+
+### All Elevated and Ambient Libraries, Pooled And Individual
+exp_design = day and temperature data for libraries 178, 359, 463, 118, 349, 481, 132, 334, 485, 151, 173, 072, 127, 380821, 272, 294, 280, 380825 (in order). 
+
+```{r elevallvsamball, eval = FALSE}
+exp_design <- data.frame(temp = factor(c("Amb", "Amb", "Amb", 
+                                         "Amb", "Amb", "Amb",
+                                         "Amb", "Amb", "Amb",
+                                         "Amb", "Amb", "Amb",
+                                         "Amb", "Amb", "Elev",
+                                         "Elev", "Elev", "Elev")),
+                             day = factor(c(0, 2, 17, 
+                                            0, 2, 17, 
+                                            0, 2, 17, 
+                                            0, 0, 0, 
+                                            0, 2, 2,
+                                            2, 2, 2)))
+
+deseq_analysis(kallisto_path = "../output/kallisto_matrices/cbaihemat_transcriptomev2.0/amb0217_elev0_low0_vs_elev2/kallisto.isoform.counts.matrix",
+               experiment_table = exp_design,
+               output_path = "../graphs/DESeq2_output/cbaihemat_transcriptomev2.0/amb0217_elev0_low0_vs_elev2",
+               variable = "temp")
+```
+
+### Elevated Day 0 vs. Elevated Day 2, Individual Libraries Only
+exp_design = day and temperature data for libraries 173, 072, 127, 272, 294, 280 (in order). 
+
+```{r elev0vselev2, eval = FALSE}
+exp_design <- data.frame(temp = factor(c("Amb", "Amb", "Amb",
+                                         "Elev", "Elev", "Elev")),
+                         day = factor(c(0, 0, 0, 2, 2, 2)))
+
+deseq_analysis(kallisto_path = "../output/kallisto_matrices/cbaihemat_transcriptomev2.0/elev0_vs_elev2_indiv/kallisto.isoform.counts.matrix",
+               experiment_table = exp_design,
+               output_path = "../graphs/DESeq2_output/cbaihemat_transcriptomev2.0/elev0_vs_elev2_indiv",
+               variable = "temp")
+```
+
+### Ambient Day 0 vs. Ambient Day 2, Individual Libraries Only
+exp_design = day and temperature data for libraries 178, 118, 132, 359, 349, 334 (in order)
+
+```{r amb0vsamb2, eval = FALSE}
+exp_design <- data.frame(day = factor(c(0, 0, 0, 
+                                        2, 2, 2)),
+                         temp = factor(c("amb", "amb", "amb",
+                                         "amb", "amb", "amb")))
+
+deseq_analysis(kallisto_path = "../output/kallisto_matrices/cbaihemat_transcriptomev2.0/amb0_vs_amb2_indiv/kallisto.isoform.counts.matrix",
+               experiment_table = exp_design,
+               output_path = "../graphs/DESeq2_output/cbaihemat_transcriptomev2.0/amb0_vs_amb2_indiv",
+               variable = "day")
+```
+
+### Ambient Day 0 vs. Ambient Day 17, Individual Libraries Only
+exp_design = day and temperature data for libraries 178, 118, 132, 463, 481, 485 (in order)
+
+```{r amb0vsamb17, eval = FALSE}
+exp_design <- data.frame(day = factor(c(0, 0, 0, 
+                                        17, 17, 17)),
+                         temp = factor(c("amb", "amb", "amb",
+                                         "amb", "amb", "amb")))
+
+deseq_analysis(kallisto_path = "../output/kallisto_matrices/cbaihemat_transcriptomev2.0/amb0_vs_amb17_indiv/kallisto.isoform.counts.matrix",
+               experiment_table = exp_design,
+               output_path = "../graphs/DESeq2_output/cbaihemat_transcriptomev2.0/amb0_vs_amb17_indiv",
+               variable = "day")
+```
+
+### Ambient Day 2 vs. Ambient Day 17, Individual Libraries Only
+exp_design = day and temperature data for libraries 359, 349, 334, 463, 481, 485 (in order)
+
+```{r amb2vsamb17, eval = FALSE}
+exp_design <- data.frame(day = factor(c(2, 2, 2, 
+                                        17, 17, 17)),
+                         temp = factor(c("amb", "amb", "amb",
+                                         "amb", "amb", "amb")))
+
+deseq_analysis(kallisto_path = "../output/kallisto_matrices/cbaihemat_transcriptomev2.0/amb2_vs_amb17_indiv/kallisto.isoform.counts.matrix",
+               experiment_table = exp_design,
+               output_path = "../graphs/DESeq2_output/cbaihemat_transcriptomev2.0/amb2_vs_amb17_indiv",
+               variable = "day")
+```
+
+### Ambient Day 2 vs. Elevated Day 2, Individual Libraries Only
+exp_design = day and temperature data for libraries 359, 349, 334, 272, 294, 280 (in order)
+
+```{r amb2vselev2, eval = FALSE}
+exp_design <- data.frame(temp = factor(c("amb", "amb", "amb",
+                                         "elev", "elev", "elev")),
+                         day = factor(c(2, 2, 2,
+                                        2, 2, 2)))
+
+deseq_analysis(kallisto_path = "../output/kallisto_matrices/cbaihemat_transcriptomev2.0/amb2_vs_elev2_indiv/kallisto.isoform.counts.matrix",
+               experiment_table = exp_design,
+               output_path = "../graphs/DESeq2_output/cbaihemat_transcriptomev2.0/amb2_vs_elev2_indiv",
+               variable = "temp")
+```
+
+# Stage 2: Turning Transcript IDs Into Accession IDs
+
+The previous step produced four tables for each pairwise comparison, as follows. Each table has the same columns: transcript ID, base mean, log2 fold change, lfcSE, stat, p-value, p-adjusted 
+
+1. Data for all differentially-expressed transcripts (DEGlist.txt)
+
+2. Same as 1 but with headers (DEGlist_wcols.txt)
+
+3. Data for all genes (AllGenes.txt)
+
+4. Same as 3, but with headers (AllGenes_wcols.txt)
+
+This  step turns those files (specifically 2 and 4) and turns them into a newline-separated file of UniProt accession IDs by cross-referencing with the BLASTx table for the transcriptome used as an index for kallisto.
+
+### Explanation of transcripts_to_geneIDs:
+
+Turns DESeq2 output to UniProt accessions
+
+Takes three inputs:
+
+1. deseq_filepath: leads to file containing gene list from DESeq2
+
+2. blast_filepath: path that leads to transcript ID/gene ID table
+
+3. output_path: path to new newline-separated file of UniProt accession IDs
+
+### UniProt accession IDs for differentially-expressed transcripts
+
+```{r allDEGs}
+# Elevated Day 2 vs. Ambient Day 0+2
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/elev2_vs_amb02_indiv_only/DEGlist_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/DEG_IDs/elev2_vs_amb02_indiv_only_DEG_IDs.txt")
+# Ambient Day 0+2+17 + Elevated Day 0 + Lowered Day 0 vs. Elevated Day 2
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/amb0217_elev0_low0_vs_elev2/DEGlist_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/DEG_IDs/amb0217_elev0_low0_vs_elev2_DEG_IDs.txt")
+# Elevated Day 0 vs. Elevated Day 2
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/elev0_vs_elev2_indiv/DEGlist_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/DEG_IDs/elev0_vs_elev2_indiv_DEG_IDs.txt")
+# Ambient Day 0 vs. Ambient Day 2
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/amb0_vs_amb2_indiv/DEGlist_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/DEG_IDs/amb0_vs_amb2_indiv_DEG_IDs.txt")
+# Ambient Day 0 vs. Ambient Day 17
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/amb0_vs_amb17_indiv/DEGlist_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/DEG_IDs/amb0_vs_amb17_indiv_DEG_IDs.txt")
+# Ambient Day 2 vs. Ambient Day 17
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/amb2_vs_amb17_indiv/DEGlist_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/DEG_IDs/amb2_vs_amb17_indiv_DEG_IDs.txt")
+# Ambient Day 2 vs. Elevated Day 2
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/amb2_vs_elev2_indiv/DEGlist_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/DEG_IDs/amb2_vs_elev2_indiv_DEG_IDs.txt")
+```
+
+# UniProt accession IDs for all transcripts
+
+```{r allgenes}
+
+# Ambient vs. Low Temperature
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/elev2_vs_amb02_indiv_only/AllGenes_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/allgenes_IDs/elev2_vs_amb02_indiv_only_All_GeneIDs.txt")
+# Ambient Day 0+2+17 + Elevated Day 0 + Lowered Day 0 vs. Elevated Day 2
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/amb0217_elev0_low0_vs_elev2/AllGenes_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/allgenes_IDs/amb0217_elev0_low0_vs_elev2_All_GeneIDs.txt")
+# Elevated Day 0 vs. Elevated Day 2
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/elev0_vs_elev2_indiv/AllGenes_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/allgenes_IDs/elev0_vs_elev2_indiv_All_GeneIDs.txt")
+# Ambient Day 0 vs. Ambient Day 2
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/amb0_vs_amb2_indiv/AllGenes_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/allgenes_IDs/amb0_vs_amb2_indiv_All_GeneIDs.txt")
+# Ambient Day 0 vs. Ambient Day 17
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/amb0_vs_amb17_indiv/AllGenes_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/allgenes_IDs/amb0_vs_amb17_indiv_All_GeneIDs.txt")
+# Ambient Day 2 vs. Ambient Day 17
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/amb2_vs_amb17_indiv/AllGenes_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/allgenes_IDs/amb2_vs_amb17_indiv_All_GeneIDs.txt")
+# Ambient Day 2 vs. Elevated Day 2
+transcripts_to_geneIDs(deseq_filepath = "../graphs/DESeq2_output/cbai_hemat_transcriptomev2.0/amb2_vs_elev2_indiv/AllGenes_wcols.txt", 
+                       blast_filepath = "../data/cbai_hemat_diamond_blastx_table_transcriptome_v2.0.txt",
+                       output_path = "../output/accession_n_GOids/cbai_hemat_transcriptomev2.0/allgenes_IDs/amb2_vs_elev2_indiv_All_GeneIDs.txt")
+```
+
+# Stage 3: Produce Venn diagram of overlap in accession IDs and transcript IDs
+
+This was used once to produce a Venn diagram for a now-outdated comparison. It is not used in any follow-up analyses, and **you can stop here without any downstream ramifications**. However, for posterity and completeness, this is included. Note that **this is also set to eval = FALSE**
+
+```{r venndiagram, eval = FALSE}
+
+#### Creating Venn diagram showing overlap in DEG --------------
+# 2 diagrams created in total
+#       - Overlap in transcript ID
+#       - Overlap in accession IDs (since not all transcript IDs matched to accession IDs)
+
+# PART 1: OVERLAP IN TRANSCRIPT IDs
+
+# Links to DESeq2 outputs containing transcript IDs and data with headers
+# If no headers, change second line of import_DEGs() definition
+filepath1 <- "../graphs/amb_v_low_day02/DEGlist_wcols.txt"
+filepath2 <- "../graphs/day0_day17_ambient/DEGlist_wcols.txt"
+filepath3 <- "../graphs/elev_v_amb_day02/DEGlist_wcols.txt"
+filepath4 <- "../graphs/elev_v_low_day02/DEGlist_wcols.txt"
+
+# Use our created function to import vector of DEG transcript IDs
+# Function present in hematodinium_analysis_functions.R
+trans_one <- import_DEGs(filepath1)
+trans_two <- import_DEGs(filepath2)
+trans_three <- import_DEGs(filepath3)
+trans_four <- import_DEGs(filepath4)
+
+# Check how much our time-comparison genes overlap with 
+# temperature-comparison genes
+sum(trans_two %in% trans_one)
+sum(trans_two %in% trans_three)
+sum(trans_two %in% trans_four)
+# Results are 2, 0, 2 - minimal overlap.
+# As a result, only including temp comparisons in Venn diagram
+
+# Create list of all DEGs from temperature comparisons
+temp_DEGs <- list(trans_one, trans_three, trans_four)
+# Create Venn diagram
+venn.diagram(x = temp_DEGs,
+             
+             # Title and labels
+             main = "Day 0/2 Individual DEGs - Transcript ID Overlap",
+             main.cex = 1.25,
+             cat.pos = c(0, 0, 180),
+             category.names = c("Ambient vs. Low",
+                                "Elevated vs. Ambient",
+                                "Elevated vs. Low"),
+             
+             # Circles
+             lwd = 2, 
+             lty = "blank",
+             fill = c("#FF949B", "#358AB8", "#FFFDAD"),
+             euler.d = TRUE,
+             scaled = TRUE,
+             
+             # Numbers
+             cex = 1.5,
+             fontface = "bold", 
+             fontfamily = "sans",
+             
+             # Output features
+             filename = "TranscriptID_DEGs.png",
+             height = 3000, 
+             width = 3000,
+             resolution = 500,
+             output = TRUE)
+
+# How many unique transcript IDs do we have for all our DEGs?
+all_IDs <- c(trans_one, trans_two, trans_three, trans_four)
+length(unique(all_IDs))
+# How many total transcript IDs do we have for our DEGs?
+length(all_IDs)
+# Percentage that are unique
+length(unique(all_IDs)) / length(all_IDs)
+
+
+# PART 2: OVERLAP IN DEG ACCESSION IDS
+
+# Links to newline-separated file of accession IDs
+filepath1 <- "../output/accession_n_GOids/DEG_IDs/Amb_vsLow_DEG_IDs.txt"
+filepath2 <- "../output/accession_n_GOids/DEG_IDs/day0_day17_amb_DEG_IDs.txt"
+filepath3 <- "../output/accession_n_GOids/DEG_IDs/Elev_vsAmb_DEG_IDs.txt"
+filepath4 <- "../output/accession_n_GOids/DEG_IDs/Elev_vsLow_DEG_IDs.txt"
+
+# Use our created function to import vector of DEG Accession IDs
+# Using unlist to make it a vector, since we're reading in directly
+trans_one <- unlist(read.table(file = filepath1, header = FALSE, sep = "\t"))
+trans_two <- unlist(read.table(file = filepath2, header = FALSE, sep = "\t"))
+trans_three <- unlist(read.table(file = filepath3, header = FALSE, sep = "\t"))
+trans_four <- unlist(read.table(file = filepath4, header = FALSE, sep = "\t"))
+
+# Check how much our time-comparison genes overlap with 
+# temperature-comparison genes
+sum(trans_two %in% trans_one)
+sum(trans_two %in% trans_three)
+sum(trans_two %in% trans_four)
+# Results are 2, 1, 3. Still minimal, 
+# so only including temp comparisons in Venn diagram
+
+# Create list of all DEGs from temperature comparisons
+temp_DEGs <- list(trans_one, trans_three, trans_four)
+# Create Venn diagram
+venn.diagram(x = temp_DEGs,
+             
+             # Title and labels
+             main = "Day 0/2 Individual DEGs - Accession ID Overlap",
+             main.cex = 1.25,
+             cat.pos = c(-30, 30, 180),
+             cat.fontface = "bold",
+             category.names = c("Ambient vs. Low",
+                                "Elevated vs. Ambient",
+                                "Elevated vs. Low"),
+             
+             # Circles
+             lwd = 2, 
+             lty = "blank",
+             fill = c("#FF949B", "#358AB8", "#FFFDAD"),
+             euler.d = TRUE,
+             scaled = TRUE,
+             
+             # Numbers
+             cex = 1.5,
+             fontface = "bold", 
+             fontfamily = "sans",
+             
+             # Output features
+             filename = "AccessionIDs_DEGs.png",
+             height = 3000, 
+             width = 3000,
+             resolution = 500,
+             output = TRUE)
+
+# How many unique Accession IDs do we have for our DEGs?
+all_IDs <- c(trans_one, trans_two, trans_three, trans_four)
+length(unique(all_IDs))
+# How many total Accession IDs do we have for our DEGs?
+length(all_IDs)
+# Percentage that are unique
+length(unique(all_IDs)) / length(all_IDs)
+```
+
+

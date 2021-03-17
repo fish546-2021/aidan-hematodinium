@@ -1,93 +1,70 @@
-# hemat_bairdii_transcriptome
- 
-First project upon starting grad school - examining differential expression of shared hematodinium/C. bairdii libraries at various temperatures and at different time points.
-
-Data has same libraries and same general notation as Grace Crandall's research
-
-Date started project: 2020/10/25 (approximation)
-Date started Github repo: 2020/12/11
+# hemat_bairdi_transcriptome
 
 Contact: Aidan Coyle, afcoyle@uw.edu
 Roberts Lab, UW-SAFS
 
-**Process and Workflow**
-My workflow begins with downloading trimmed libraries of _Hematodinium_-infected Tanner crab (_Chionoecetes bairdi_), along with a transcriptome containing both _Hematodinium_ and _C. bairdi_ genes that is unfiltered by taxonomy. The transcriptome is used to create an index using [kallisto](https://pachterlab.github.io/kallisto/manual), and our trimmed libraries are then quantified via pseudoalignment to our index.
+Last edited README: 2021-03-04
 
-From the quantified kallisto output, I use [this script from the Trinity pipeline](https://github.com/trinityrnaseq/trinityrnaseq/wiki/Trinity-Transcript-Quantification) to create a matrix of counts. That matrix of counts is then fed into [DESeq2](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html), which produces tables of differentially-expressed genes and of all genes, both with the corresponding p-values and adjusted p-values. 
+Examining differential expression of shared _Hematodinium_/_C. bairdi_ libraries over temperature and time.
 
-I then take the table of transcript IDs for all genes and cross-reference it with [the BLASTx annotation of the transcriptome we downloaded earlier](https://gannet.fish.washington.edu/Atumefaciens/20200508_cbai_diamond_blastx_transcriptome-v2.0/20200507.C_bairdi.Trinity.blastx.outfmt6) to produce a table of all accession IDs. That table is then cross-referenced with the Swiss-Prot database to produce a tab-delimited two-column table of gene IDs and GO terms.
+All libraries originate from Grace Crandall's research. The same libraries and general notation is used here. 
 
-I also take the DESeq output table of all genes and cross-reference it again with the BLASTx annotation to produce a CSV table of gene IDs and unadjusted p-values. 
+# Tool Information and Software Versions
 
-The tab-delimited two-column table and the two-column CSV are then used as input for [GO-MWU](https://github.com/z0on/GO_MWU), which performs a gene ontology analysis and determines which pathways are significantly enriched based on GO annotations.
+### kallisto: version 0.46.0
 
-**Data Sources**
+### Trinotate: version 3.2.1
 
-*Libraries*
+### Jupyter Lab: version 2.1.5
 
+### Jupyter Notebook: version 6.0.3
 
-[Trimmed individual libraries downloaded from here](https://gannet.fish.washington.edu/Atumefaciens/20200318_cbai_RNAseq_fastp_trimming/) at 22:00 PST on 2021-02-02
-
-[Pooled libraries downloaded from here](https://gannet.fish.washington.edu/Atumefaciens/20200414_cbai_RNAseq_fastp_trimming/) at 24:00 PST on 2021-02-02
-
-Mapping between libraries and treatments is available [at this Google doc](https://docs.google.com/spreadsheets/d/1d17yg5F5gKKC66O8QkTIlPxljJeuX7ZsG46pkBr1lNQ/edit#gid=0)
-
-*Transcriptome*
-
-[Transcriptomes downloaded from here](https://owl.fish.washington.edu/halfshell/genomic-databank/). at 01:00 PST on 2021-02-03
-
-Transcriptome checksums, along with additional information (including BLASTx annotation, GO terms annotation, etc) [available here](https://github.com/RobertsLab/resources/wiki/Genomic-Resources)
-
-*Swiss-Prot Database*
-
-[Swiss-Prot database manually downloaded from here](https://www.uniprot.org/uniprot/?) at 15:00 on 2021-02-09.
-Downloaded an uncompressed .tab file that includes all GO terms
-
-**Tool Information**
-
-R: 
-```
-platform       x86_64-w64-mingw32          
-arch           x86_64                      
-os             mingw32                     
-system         x86_64, mingw32             
-status                                     
-major          4                           
-minor          0.3                         
-year           2020                        
-month          10                          
-day            10                          
-svn rev        79318                       
-language       R                           
-version.string R version 4.0.3 (2020-10-10)
-nickname       Bunny-Wunnies Freak Out    
-```
-
-kallisto: version 0.46.0
-
-Trinotate: version 3.2.1
-
-Operating system:
+### Operating system:
 ```
 Windows 10, x64 (OS build: 18363.1256)
 Running WSL version 1
 ```
 
-R packages:
+
+### R packages and info:
 ```
-apeglm: 1.12.0
-BiocManager: 1.30.10
-DESeq2: 1.30.0
-tidyverse: 1.3.0
-topGO: 2.42.0
-VennDiagram: 1.6.20
-vsn: 3.58.0
+R version 4.0.4 (2021-02-15)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 18363)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252  LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252 LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+ [1] grid      parallel  stats4    stats     graphics  grDevices utils     datasets  methods  
+[10] base     
+
+other attached packages:
+ [1] VennDiagram_1.6.20          futile.logger_1.4.3         ape_5.4-1                  
+ [4] vsn_3.58.0                  forcats_0.5.1               stringr_1.4.0              
+ [7] dplyr_1.0.4                 purrr_0.3.4                 readr_1.4.0                
+[10] tidyr_1.1.3                 tibble_3.1.0                ggplot2_3.3.3              
+[13] tidyverse_1.3.0             DESeq2_1.30.1               SummarizedExperiment_1.20.0
+[16] Biobase_2.50.0              MatrixGenerics_1.2.1        matrixStats_0.58.0         
+[19] GenomicRanges_1.42.0        GenomeInfoDb_1.26.2         IRanges_2.24.1             
+[22] S4Vectors_0.28.1            BiocGenerics_0.36.0         apeglm_1.12.0  
 ```
+## Folders:
 
-**Completed Analysis**
+data: unmodified data files
 
-Following scripts 01 through 06, I completed analysis with GO-MWU following the pipeline described at the top of this file. 
+graphs: output from various R packages ran as part of analyses. Does include several tables
 
-**Plan for the Future**
+output: output from analyses
 
-In weeks 6-10, I plan to reorient towards a weighted correlation network analysis to examine the effects of both time and temperature treatment. Furthermore, I hope to differentiate _Hematodinium_ DEGs from _C. bairdi_ DEGs, and look at which _Hematodinium_ genes are impacted by temperature on an individual basis.
+paper: publication
+
+scripts: code to run analyses. Does include some output within the GO-MWU directory, as it is required for GO-MWU to run.
+
+## Subfolders:
+
+Many folders in output/ and graphs/ are split into subdirectories labeled cbaihemat_transcriptomev2.0 and hemat_transcriptomev1.6. These correspond to analyses performed using [cbai_transcriptomev2.0](https://robertslab.github.io/sams-notebook/2020/05/02/Transcriptome-Assembly-C.bairdi-All-RNAseq-Data-Without-Taxonomic-Filters-with-Trinity-on-Mox.html) and [hemat_transcriptomev1.6](https://robertslab.github.io/sams-notebook/2021/03/08/Transcriptome-Assembly-Hematodinium-Transcriptomes-v1.6-and-v1.7-with-Trinity-on-Mox.html)
