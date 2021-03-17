@@ -229,8 +229,14 @@ colnames(amb2_elev2_arth)[3] &lt;- &quot;arth_eval&quot;
 # Left join the two tables
 amb2_elev2 &lt;- left_join(amb2_elev2_alv, amb2_elev2_arth, by = &quot;qseqid&quot;)
 
+# Number of DEGs more likely to be C. bairdi
+
 sum(as.numeric(amb2_elev2$alv_eval &gt; amb2_elev2$arth_eval), na.rm = TRUE)</code></pre>
 <pre><code>## [1] 1175</code></pre>
+<pre class="r"><code># Number of DEGs more likely to be Hematodinium
+
+sum(as.numeric(amb2_elev2$alv_eval &lt; amb2_elev2$arth_eval), na.rm = TRUE)</code></pre>
+<pre><code>## [1] 741</code></pre>
 <pre class="r"><code>#####################################
 # Do the same for comparing Elevated Day 0/2
 #####################################
@@ -261,8 +267,15 @@ colnames(elev0_elev2_arth)[3] &lt;- &quot;arth_eval&quot;
 # Left join the two tables
 elev0_elev2 &lt;- left_join(elev0_elev2_alv, elev0_elev2_arth, by = &quot;qseqid&quot;)
 
+
+# Number of DEGs more likely to be C. bairdi
+
 sum(as.numeric(elev0_elev2$alv_eval &gt; elev0_elev2$arth_eval), na.rm = TRUE)</code></pre>
 <pre><code>## [1] 217</code></pre>
+<pre class="r"><code># Number of DEGs more likely to be Hematodinium
+
+sum(as.numeric(elev0_elev2$alv_eval &lt; elev0_elev2$arth_eval), na.rm = TRUE)</code></pre>
+<pre><code>## [1] 66</code></pre>
 
 
 
